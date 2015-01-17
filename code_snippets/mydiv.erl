@@ -3,22 +3,22 @@
 
 -mode(compile).  % for better performance
 
-f(_X, 0) -> {error, "Divide by zero, dumbass."};
-f(X, Y) -> {X div Y, X rem Y}.
+mydiv(_X, 0) -> {error, "Divide by zero, dumbass."};
+mydiv(X, Y) -> {X div Y, X rem Y}.
 
 main([Xstr, Ystr]) ->
-    ParseY = fun (X) ->
-        BothOk = fun (Y) ->
+    parseInt(Xstr, fun (X) ->
+        parseInt(Ystr, fun (Y) ->
             display(X, Y)
-        end,
-        parseInt(Ystr, BothOk)
-    end,
-    parseInt(Xstr, ParseY).
+        end)
+    end).
 
 display(X, Y) ->
-    case f(X, Y) of
-        {error, Msg} -> io:format("Error: ~s~n", [Msg]);
-        {Div, Mod} -> io:format("X:~w, Y:~w, div:~w, mod:~w~n", [X, Y, Div, Mod])
+    case mydiv(X, Y) of
+        {error, Msg} ->
+            io:format("Error: ~s~n", [Msg]);
+        {Div, Mod} ->
+            io:format("X:~w, Y:~w, div:~w, mod:~w~n", [X, Y, Div, Mod])
     end.
 
 parseInt(IntStr, Success) ->

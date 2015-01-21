@@ -71,10 +71,12 @@ It's worth learning even if you never use it
           <script type="text/template">
 # Basics
 
-* dynamically typed
+* dynamic typing
 * no objects, just lists & tuples
+* all variables are immutable
 * no loops
 * pattern matching + guards
+* lightweight processes
           </script>
         </section>
         <!-- NOTE: sometimes syntax highlighting works fine in markdown, sometimes not -->
@@ -257,11 +259,12 @@ score([First,Second|Rest], Frame, Score) ->
 Pid = spawn(fun loop/1, {}),
 ```
 <!-- .element: class="fragment" data-fragment-index="1" -->
-          </script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
-# More OO than OO
+
+```erlang
+Pid ! Message.
+```
+<!-- .element: class="fragment" data-fragment-index="2" -->
+
 ```erlang
 loop(State) ->
     receive Message ->
@@ -269,33 +272,45 @@ loop(State) ->
         loop(NewState)
     end.
 ```
+<!-- .element: class="fragment" data-fragment-index="3" -->
           </script>
         </section>
         <section data-markdown>
           <script type="text/template">
-# More OO than OO
+## UID Generator
 ```erlang
 loop(Id) ->
     receive
         {FromPid, next} ->
-            NewId = Id + 1,
-            FromPid ! NewId,
-            loop(NewId)
+            FromPid ! Id,
+            loop(Id + 1)
     end.
-
-init() ->
-    Pid = spawn(fun() -> loop(0) end),
-    Pid ! {self(), next},
-    Id = receive Resp -> Resp end.
 ```
+
+```erlang
+init() ->
+    spawn(fun() -> loop(1) end).
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+```erlang
+next(Pid) ->
+    Pid ! {self(), next},
+    receive Resp -> Resp
+    after 5000 -> error
+    end.
+```
+<!-- .element: class="fragment" data-fragment-index="2" -->
           </script>
         </section>
-        <section>
-          <h1>More OO than OO</h1>
-          <pre><code data-trim>
+        <section data-markdown>
+          <script type="text/template">
+## UID Generator
+```erlang
 1> file:open("test.txt", [write]).
 {ok,<0.35.0>}
-          </code></pre>
+```
+          </script>
         </section>
       </div>
 

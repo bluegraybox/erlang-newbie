@@ -1,5 +1,7 @@
 .diff
 .commit
+.*.swp
+*.beam
 .DS_Store
 .svn
 log/*.log

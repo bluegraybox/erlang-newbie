@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title>reveal.js - The HTML Presentation Framework</title>
+    <title>Erlang</title>
 
     <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
     <meta name="author" content="Hakim El Hattab">
@@ -193,11 +193,13 @@ func(Input) ->
     Output = [],
     func(Input, Output).
 ```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
 ```erlang
 %% end
 func([], Output) -> lists:reverse(Output).
 ```
-<!-- .element: class="fragment" data-fragment-index="1" -->
+<!-- .element: class="fragment" data-fragment-index="2" -->
 
 ```erlang
 %% middle
@@ -205,14 +207,56 @@ func([First | Rest], Output) ->
     NewFirst = munge(First),
     func(Rest, [NewFirst | Output]);
 ```
-<!-- .element: class="fragment" data-fragment-index="2" -->
+<!-- .element: class="fragment" data-fragment-index="3" -->
+
+but really...  <!-- .element: class="fragment" data-fragment-index="4" -->
+```erlang
+lists:map(fun my_module:munge/1, Input)
+```
+<!-- .element: class="fragment" data-fragment-index="4" -->
           </script>
         </section>
         <section data-markdown>
           <script type="text/template">
+# Bowling
 ```erlang
-lists:map(fun my_module:munge/1, Input)
+score(Rolls) -> score(Rolls, 1, 0).
 ```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+```erlang
+score(_BonusRolls, 11, Score) -> Score;
+```
+<!-- .element: class="fragment" data-fragment-index="2" -->
+
+```erlang
+score([10|Rest], Frame, Score) ->
+    [Bonus1, Bonus2|_] = Rest,
+    score(Rest, Frame + 1, Score + 10 + Bonus1 + Bonus2);
+```
+<!-- .element: class="fragment" data-fragment-index="4" -->
+
+```erlang
+score([First,Second|Rest], Frame, Score) when (First+Second==10)->
+    [Bonus1|_] = Rest,
+    score(Rest, Frame + 1, Score + 10 + Bonus1);
+```
+<!-- .element: class="fragment" data-fragment-index="5" -->
+
+```erlang
+score([First,Second|Rest], Frame, Score) ->
+    score(Rest, Frame + 1, Score + First + Second).
+```
+<!-- .element: class="fragment" data-fragment-index="3" -->
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+# Processes
+```erlang
+Pid = spawn(fun loop/1, {}),
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
           </script>
         </section>
         <section data-markdown>

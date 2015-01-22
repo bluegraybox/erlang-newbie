@@ -256,7 +256,7 @@ score([First,Second|Rest], Frame, Score) ->
           <script type="text/template">
 # Processes
 ```erlang
-Pid = spawn(fun loop/1, {}),
+Pid = spawn(?MODULE, loop, [State]),
 ```
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
@@ -289,15 +289,48 @@ loop(Id) ->
 
 ```erlang
 init() ->
-    spawn(fun() -> loop(1) end).
+    spawn(?MODULE, loop, [1]).
 ```
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
 ```erlang
 next(Pid) ->
     Pid ! {self(), next},
+    receive Resp -> Resp end.
+```
+<!-- .element: class="fragment" data-fragment-index="2" -->
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+## Everything's a process
+```erlang
+1> file:open("test.txt", [write]).
+{ok,<0.35.0>}
+```
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+## Division Service
+```erlang
+init() ->
+    DivPid = spawn(?MODULE, div_loop, []),
+    register(divsvc, DivPid).
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+```erlang
+div_loop() ->
+    receive {FromPid, X, Y} -> FromPid ! X/Y end,
+    div_loop().
+```
+
+```erlang
+get_div(X, Y) ->
+    divsvc ! {self(), X, Y},
     receive Resp -> Resp
-    after 5000 -> error
+    after 3000 -> {error,"Timed out"}
     end.
 ```
 <!-- .element: class="fragment" data-fragment-index="2" -->
@@ -305,11 +338,88 @@ next(Pid) ->
         </section>
         <section data-markdown>
           <script type="text/template">
-## UID Generator
+## Division Service
 ```erlang
-1> file:open("test.txt", [write]).
-{ok,<0.35.0>}
+1> divsvc:init().
+ok
+2> divsvc:get_div(5, 3).
+1.6666666666666667
 ```
+
+```erlang
+3> divsvc:get_div(18, 0).
+div_loop (pid=<0.41.0>) exited: {badarith,[{divsvc,div_loop,0,[{file,[100,105,118,115,118,99,46,101,114,108]},{line,35}]}]}
+
+=ERROR REPORT==== 22-Jan-2015::06:52:06 ===
+Error in process <0.41.0> with exit value: {badarith,[{divsvc,div_loop,0,[{file,"divsvc.erl"},{line,35}]}]}
+
+{error,"Timed out"}
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+```erlang
+4> divsvc:get_div(5, 3).
+{error,"Timed out"}
+```
+<!-- .element: class="fragment" data-fragment-index="2" -->
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+## DivSvr Supervisor
+```erlang
+init() ->
+    spawn(?MODULE, supervisor, []).
+
+supervisor() ->
+    process_flag(trap_exit, true),
+    DivPid = spawn_link(?MODULE, div_loop, []),
+    register(divsvc, DivPid),
+    supervisor_loop().
+```
+
+```erlang
+supervisor_loop() ->
+    receive
+        {'EXIT', _Pid, _Reason} ->
+            DivPid = spawn_link(?MODULE, div_loop, []),
+            register(divsvc, DivPid),
+            io:format("restarted divsvc with pid=~w~n", [DivPid])
+    end,
+    supervisor_loop().
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+## DivSvr Supervisor
+```erlang
+1> divsvc:init().
+<0.40.0>
+```
+
+```erlang
+2> divsvc:get_div(18, 0).
+restarted divsvc with pid=<0.44.0>
+
+=ERROR REPORT==== 22-Jan-2015::07:05:04 ===
+Error in process <0.41.0> with exit value: {badarith,[{divsvc,div_loop,0,[{file,"divsvc.erl"},{line,27}]}]}
+
+{error,"Timed out"}
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+```erlang
+3> divsvc:get_div(5, 3).
+1.6666666666666667
+```
+<!-- .element: class="fragment" data-fragment-index="2" -->
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+But that's not how you'd do it for real...
           </script>
         </section>
       </div>

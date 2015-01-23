@@ -79,7 +79,6 @@ It's worth learning even if you never use it
 * lightweight processes
           </script>
         </section>
-        <!-- NOTE: sometimes syntax highlighting works fine in markdown, sometimes not -->
         <section data-markdown>
           <script type="text/template">
 # Syntax
@@ -91,18 +90,13 @@ It's worth learning even if you never use it
 * {tuple, "of", Anything}
           </script>
         </section>
-        <section data-markdown>
-          <script type="text/template">
-# Functions
-```erlang
-f(X) -> X * 2.
-```
+        <!-- SRSLY: Need one block of code formatted with <code>, or sytax highlighting won't work for the markdown sections -->
+        <section>
+<h1>Functions</h1>
+<pre><code>f(X) -> X * 2.</code></pre>
 and lambdas <!-- .element: class="fragment" data-fragment-index="1" -->
-```erlang
-F = fun (X) -> X * 2 end.
-```
+<pre><code>F = fun (X) -> X * 2 end.</code></pre>
 <!-- .element: class="fragment" data-fragment-index="1" -->
-          </script>
         </section>
         <section data-markdown>
           <script type="text/template">
@@ -366,7 +360,7 @@ Error in process <0.41.0> with exit value: {badarith,[{divsvc,div_loop,0,[{file,
         </section>
         <section data-markdown>
           <script type="text/template">
-## DivSvr Supervisor
+## Supervisor
 ```erlang
 init() ->
     spawn(?MODULE, supervisor, []).
@@ -393,7 +387,7 @@ supervisor_loop() ->
         </section>
         <section data-markdown>
           <script type="text/template">
-## DivSvr Supervisor
+## Supervisor
 ```erlang
 1> divsvc:init().
 <0.40.0>
@@ -420,6 +414,16 @@ Error in process <0.41.0> with exit value: {badarith,[{divsvc,div_loop,0,[{file,
         <section data-markdown>
           <script type="text/template">
 But that's not how you'd do it for real...
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+# OTP Framework
+* servers - sync & async
+* event pub/sub
+* finite state machines
+* supervision trees; declarative restart
+* release/upgrade management
           </script>
         </section>
       </div>

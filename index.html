@@ -51,7 +51,7 @@ And why does Colin keep yammering on about it?
 # tl;dr
 It's worth learning even if you never use it
 
-* influence (Scala, Swift)
+* influence (Scala, Swift, Go)
 * think different
 * maybe someday
           </script>
@@ -69,14 +69,20 @@ It's worth learning even if you never use it
         </section>
         <section data-markdown>
           <script type="text/template">
-# Basics
+# Features
 
 * dynamic typing
 * no objects, just lists & tuples
-* all variables are immutable
+* immutable variables
 * no loops
+* tail recursion
 * pattern matching + guards
-* lightweight processes
+* lightweight processes & message passing
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+# Synergistic Weirdness
           </script>
         </section>
         <section data-markdown>
@@ -90,13 +96,19 @@ It's worth learning even if you never use it
 * {tuple, "of", Anything}
           </script>
         </section>
-        <!-- SRSLY: Need one block of code formatted with <code>, or sytax highlighting won't work for the markdown sections -->
-        <section>
-<h1>Functions</h1>
-<pre><code>f(X) -> X * 2.</code></pre>
-and lambdas <!-- .element: class="fragment" data-fragment-index="1" -->
-<pre><code>F = fun (X) -> X * 2 end.</code></pre>
+        <section data-markdown>
+          <script type="text/template">
+# Functions
+```erlang
+f(X) -> X * 2.
+```
+and lambdas
 <!-- .element: class="fragment" data-fragment-index="1" -->
+```erlang
+F = fun (X) -> X * 2 end.
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+          </script>
         </section>
         <section data-markdown>
           <script type="text/template">
@@ -105,19 +117,19 @@ and lambdas <!-- .element: class="fragment" data-fragment-index="1" -->
 my_div(X, Y) ->
     {X div Y, X rem Y}.
 ```
-Divide by Zero? <!-- .element: class="fragment" data-fragment-index="1" -->
+
+Divide by Zero?
+<!-- .element: class="fragment" data-fragment-index="2" -->
           </script>
         </section>
-        <section data-markdown>
-          <script type="text/template">
-## Function Clauses & Pattern Matching
-```erlang
-my_div(_X, 0) ->
+        <!-- SRSLY: Need one block of code formatted with <code>, or sytax highlighting won't work for the markdown sections -->
+        <!-- SRSLY: Fragments don't work in normal sections like this. -->
+        <section>
+<h2>Function Clauses &amp; Pattern Matching</h2>
+<pre><code>my_div(_X, 0) ->
     {error, "Divide by zero, dumbass."};
 my_div(X, Y) ->
-    {X div Y, X rem Y}.
-```
-          </script>
+    {X div Y, X rem Y}.</code></pre>
         </section>
         <section data-markdown>
           <script type="text/template">
@@ -248,17 +260,27 @@ score([First,Second|Rest], Frame, Score) ->
         </section>
         <section data-markdown>
           <script type="text/template">
+## Testing
+```erlang
+test() ->
+    test(0,   [0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0]),
+    test(20,  [1,1, 1,1, 1,1, 1,1, 1,1, 1,1, 1,1, 1,1, 1,1, 1,1]),
+    test(150, [5,5, 5,5, 5,5, 5,5, 5,5, 5,5, 5,5, 5,5, 5,5, 5,5, 5]),
+    test(47,  [1,1, 1,1, 1,1, 1,1, 1,1, 1,1, 1,1, 1,1, 1,1, 10, 10 ,9]),
+    test(173, [7,3, 7,3, 7,3, 7,3, 7,3, 7,3, 7,3, 7,3, 7,3, 7,3, 10]),
+ 
+test(Expected, Rolls) ->
+    case score(Rolls) of
+        Expected -> io:fwrite("Pass~n");
+        Scored -> io:fwrite("Fail: expected=~p, scored=~p~n",
+            [Expected, Scored])
+    end.
+```
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
 # Processes
-```erlang
-Pid = spawn(?MODULE, loop, [State]),
-```
-<!-- .element: class="fragment" data-fragment-index="1" -->
-
-```erlang
-Pid ! Message.
-```
-<!-- .element: class="fragment" data-fragment-index="2" -->
-
 ```erlang
 loop(State) ->
     receive Message ->
@@ -266,7 +288,49 @@ loop(State) ->
         loop(NewState)
     end.
 ```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+```erlang
+Pid = spawn(fun () -> loop(State) end),
+```
+<!-- .element: class="fragment" data-fragment-index="2" -->
+
+```erlang
+Pid = spawn(my_module, loop, [State]),
+```
 <!-- .element: class="fragment" data-fragment-index="3" -->
+
+```erlang
+Pid ! Message.
+```
+<!-- .element: class="fragment" data-fragment-index="4" -->
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+## Registered Processes
+```erlang
+Pid = spawn(my_module, loop, [State]),
+register(myservice, Pid),
+```
+
+```erlang
+myservice ! Message.
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+## Remote Processes
+```erlang
+{myservice, othernode} ! Message.
+```
+
+```erlang
+{myservice, othernode@mysvr.mydomain.com} ! Message.
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
           </script>
         </section>
         <section data-markdown>
@@ -418,12 +482,35 @@ But that's not how you'd do it for real...
         </section>
         <section data-markdown>
           <script type="text/template">
-# OTP Framework
+# OTP
 * servers - sync & async
 * event pub/sub
 * finite state machines
 * supervision trees; declarative restart
 * release/upgrade management
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+whew!
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+# Takeaways
+* functional idioms
+* recursion
+* simple data structures
+* actor model
+* supervisors
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+# Questions?
+
+https://github.com/bluegraybox/erlang-newbie
+http://bluegraybox.github.io/erlang-newbie
           </script>
         </section>
       </div>

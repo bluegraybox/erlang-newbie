@@ -11,6 +11,7 @@ init() ->
 supervisor() ->
     process_flag(trap_exit, true),
     DivPid = spawn_link(?MODULE, div_loop, []),
+    io:format("started divsvc with pid=~w~n", [DivPid]),
     register(?SVC_NAME, DivPid),
     supervisor_loop().
 

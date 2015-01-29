@@ -89,7 +89,7 @@ It's worth learning even if you never use it
           <script type="text/template">
 # Syntax
 
-* atom or 'atom'
+* atom or 'ATOM'
 * Variable
 * "string"
 * [list, "of", Anything]
@@ -281,6 +281,15 @@ test(Expected, Rolls) ->
         <section data-markdown>
           <script type="text/template">
 # Processes
+* lightweight
+* no shared data
+* message passing
+* more OO than OO
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+# Processes
 ```erlang
 loop(State) ->
     receive Message ->
@@ -288,22 +297,21 @@ loop(State) ->
         loop(NewState)
     end.
 ```
-<!-- .element: class="fragment" data-fragment-index="1" -->
 
 ```erlang
 Pid = spawn(fun () -> loop(State) end),
 ```
-<!-- .element: class="fragment" data-fragment-index="2" -->
+<!-- .element: class="fragment" data-fragment-index="1" -->
 
 ```erlang
 Pid = spawn(my_module, loop, [State]),
 ```
-<!-- .element: class="fragment" data-fragment-index="3" -->
+<!-- .element: class="fragment" data-fragment-index="2" -->
 
 ```erlang
 Pid ! Message.
 ```
-<!-- .element: class="fragment" data-fragment-index="4" -->
+<!-- .element: class="fragment" data-fragment-index="3" -->
           </script>
         </section>
         <section data-markdown>
@@ -324,11 +332,11 @@ myservice ! Message.
           <script type="text/template">
 ## Remote Processes
 ```erlang
-{myservice, othernode} ! Message.
+{myservice, othernode@mymachine} ! Message.
 ```
 
 ```erlang
-{myservice, othernode@mysvr.mydomain.com} ! Message.
+{myservice, othernode@mymachine.mydomain.com} ! Message.
 ```
 <!-- .element: class="fragment" data-fragment-index="1" -->
           </script>
@@ -445,6 +453,7 @@ init() ->
 supervisor() ->
     process_flag(trap_exit, true),
     DivPid = spawn_link(?MODULE, div_loop, []),
+    io:format("started divsvc with pid=~w~n", [DivPid]),
     register(divsvc, DivPid),
     supervisor_loop().
 ```
@@ -467,6 +476,7 @@ supervisor_loop() ->
 ## Supervisor
 ```erlang
 1> divsvc:init().
+started divsvc with pid=<0.41.0>
 <0.40.0>
 ```
 

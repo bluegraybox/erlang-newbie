@@ -361,6 +361,19 @@ next(Pid) ->
         </section>
         <section data-markdown>
           <script type="text/template">
+## UID Generator
+```erlang
+1> Pid = autoinc:init().
+<0.40.0>
+2> autoinc:next(Pid).
+1
+3> autoinc:next(Pid).
+2
+```
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
 ## Everything's a process
 ```erlang
 1> file:open("test.txt", [write]).

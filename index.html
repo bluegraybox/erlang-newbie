@@ -174,7 +174,8 @@ end
 Real-world example <!-- .element: class="fragment" data-fragment-index="1" -->
 ```erlang
 case httpc:request(Url) of
-    {error, Message} -> ...
+    {error, Message} -> ... ;
+    {ok, {{Proto, 200, Desc}, Headers, Content}} -> ... ;
     {ok, {{Proto, Code, Desc}, Headers, Content}} -> ...
 end
 ```

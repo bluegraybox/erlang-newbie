@@ -343,21 +343,16 @@ myservice ! Message.
 ```
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
-Note:
-Service registration is a language built-in.
-          </script>
-        </section>
-        <section data-markdown>
-          <script type="text/template">
-## Remote Processes
+### Remote Processes <!-- .element: class="fragment" data-fragment-index="2" -->
 ```erlang
 {myservice, othernode@mymachine} ! Message.
 ```
+<!-- .element: class="fragment" data-fragment-index="2" -->
 
 ```erlang
-{myservice, othernode@mymachine.mydomain.com} ! Message.
+{myservice, othernode@other.mydomain.com} ! Message.
 ```
-<!-- .element: class="fragment" data-fragment-index="1" -->
+<!-- .element: class="fragment" data-fragment-index="3" -->
           </script>
         </section>
         <section data-markdown>

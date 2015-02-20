@@ -1,6 +1,6 @@
 -module(divsvc).
 
--export([init/0, supervisor/0, div_loop/0, get_div/2]).
+-export([init/0, supervisor/0, div_loop/0, get_div/2, get_div/3]).
 
 -define(SVC_NAME, divsvc).
 
@@ -29,7 +29,13 @@ div_loop() ->
     div_loop().
 
 get_div(X, Y) ->
-    ?SVC_NAME ! {self(), X, Y},
+    rdiv(?SVC_NAME, X, Y).
+
+get_div(Node, X, Y) ->
+    rdiv({?SVC_NAME, Node}, X, Y).
+
+rdiv(Svc, X, Y) ->
+    Svc ! {self(), X, Y},
     receive Resp -> Resp
     after 3000 -> {error, "Timed out"}
     end.

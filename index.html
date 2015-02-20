@@ -70,7 +70,6 @@ It's worth learning even if you never use it
         <section data-markdown>
           <script type="text/template">
 # Features
-
 * dynamically typed
 * immutable variables & structures
 * tail recursion; no loops
@@ -519,6 +518,19 @@ Error in process <0.41.0> with exit value: {badarith,[{divsvc,div_loop,0,[{file,
         </section>
         <section data-markdown>
           <script type="text/template">
+## Start Script
+```erlang
+#!/usr/local/bin/escript
+%%! -smp enable -sname divserver
+
+main([]) ->
+    spawn(divsvc, supervisor, []),
+    io:get_line("Return to exit...").
+```
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
 But that's not how you'd do it for real...
           </script>
         </section>
@@ -539,7 +551,7 @@ whew!
         </section>
         <section data-markdown>
           <script type="text/template">
-# Erlang teaches you
+# Building Blocks
 * functional idioms
 * recursion
 * pattern matching
@@ -550,10 +562,19 @@ whew!
         </section>
         <section data-markdown>
           <script type="text/template">
+# Getting Started
+* `brew install erlang`
+* `erl` - interactive shell
+* `escript` - write shell scripts in Erlang
+* [Learn You Some Erlang for Great Good](http://learnyousomeerlang.com/content)
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
 # Questions?
-
-https://github.com/bluegraybox/erlang-newbie
-http://bluegraybox.github.io/erlang-newbie
+<dl>
+<dh>presentation</dh><dt>http://bluegraybox.github.io/erlang-newbie</dt>
+<dh>source & snippets</dh><dt>https://github.com/bluegraybox/erlang-newbie</dt>
           </script>
         </section>
       </div>

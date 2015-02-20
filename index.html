@@ -71,11 +71,10 @@ It's worth learning even if you never use it
           <script type="text/template">
 # Features
 
-* dynamic typing
-* no objects, just lists & tuples
-* immutable variables
-* no loops
-* tail recursion
+* dynamically typed
+* immutable variables & structures
+* tail recursion; no loops
+* lists & tuples; no objects
 * pattern matching + guards
 * lightweight processes & message passing
           </script>
@@ -94,7 +93,7 @@ concurrent processes -> management of shared state
         </section>
         <section data-markdown>
           <script type="text/template">
-# Syntax
+# Syntax Basics
 
 * atom or 'ATOM'
 * Variable
@@ -115,6 +114,9 @@ and lambdas
 F = fun (X) -> X * 2 end.
 ```
 <!-- .element: class="fragment" data-fragment-index="1" -->
+
+Note:
+*Everything* returns a value
           </script>
         </section>
         <section data-markdown>
@@ -132,7 +134,7 @@ Divide by Zero?
         <!-- SRSLY: Need one block of code formatted with <code>, or sytax highlighting won't work for the markdown sections -->
         <!-- SRSLY: Fragments don't work in normal sections like this. -->
         <section>
-<h2>Function Clauses &amp; Pattern Matching</h2>
+<h2>Clauses &amp; Pattern Matching</h2>
 <pre><code class="erlang">my_div(_X, 0) ->
     {error, "Divide by zero, dumbass."};
 my_div(X, Y) ->
@@ -172,10 +174,11 @@ my_func([{X1, Y1}, {X2, Y2} | Rest]) -> ...
 ## On the return side
 ```erlang
 case my_div(X, Y) of
-    {error, Msg} -> io:format("Error: ~s~n", [Msg]);
-    {Div, Mod} -> io:format(
-        "X:~w, Y:~w, div:~w, mod:~w~n",
-        [X, Y, Div, Mod])
+    {error, Msg} ->
+        io:format("Error: ~s~n", [Msg]);
+    {Div, Mod} ->
+        io:format("X:~w, Y:~w, div:~w, mod:~w~n",
+            [X, Y, Div, Mod])
 end
 ```
           </script>
@@ -236,35 +239,41 @@ lists:map(fun my_module:munge/1, Input)
         <section data-markdown>
           <script type="text/template">
 # Bowling
+* the game itself
+* OO modeling
+* as a function
+          </script>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
 ```erlang
 score(Rolls) -> score(Rolls, 1, 0).
 ```
-<!-- .element: class="fragment" data-fragment-index="1" -->
 
 ```erlang
 score(_BonusRolls, 11, Score) -> Score;
 ```
-<!-- .element: class="fragment" data-fragment-index="2" -->
+<!-- .element: class="fragment" data-fragment-index="1" -->
 
 ```erlang
 score([10|Rest], Frame, Score) ->
     [Bonus1, Bonus2|_] = Rest,
     score(Rest, Frame + 1, Score + 10 + Bonus1 + Bonus2);
 ```
-<!-- .element: class="fragment" data-fragment-index="4" -->
+<!-- .element: class="fragment" data-fragment-index="3" -->
 
 ```erlang
 score([First,Second|Rest], Frame, Score) when (First+Second==10)->
     [Bonus1|_] = Rest,
     score(Rest, Frame + 1, Score + 10 + Bonus1);
 ```
-<!-- .element: class="fragment" data-fragment-index="5" -->
+<!-- .element: class="fragment" data-fragment-index="4" -->
 
 ```erlang
 score([First,Second|Rest], Frame, Score) ->
     score(Rest, Frame + 1, Score + First + Second).
 ```
-<!-- .element: class="fragment" data-fragment-index="3" -->
+<!-- .element: class="fragment" data-fragment-index="2" -->
           </script>
         </section>
         <section data-markdown>
@@ -281,8 +290,8 @@ test() ->
 test(Expected, Rolls) ->
     case score(Rolls) of
         Expected -> io:fwrite("Pass~n");
-        Scored -> io:fwrite("Fail: expected=~p, scored=~p~n",
-            [Expected, Scored])
+        Wrong -> io:fwrite("Fail: expected=~p, actual=~p~n",
+            [Expected, Wrong])
     end.
 ```
           </script>
@@ -298,7 +307,6 @@ test(Expected, Rolls) ->
         </section>
         <section data-markdown>
           <script type="text/template">
-# Processes
 ```erlang
 loop(State) ->
     receive Message ->
@@ -335,6 +343,9 @@ register(myservice, Pid),
 myservice ! Message.
 ```
 <!-- .element: class="fragment" data-fragment-index="1" -->
+
+Note:
+Service registration is a language built-in.
           </script>
         </section>
         <section data-markdown>
@@ -482,7 +493,6 @@ supervisor_loop() ->
         </section>
         <section data-markdown>
           <script type="text/template">
-## Supervisor
 ```erlang
 > divsvc:init().
 started divsvc with pid=<0.41.0>
@@ -529,7 +539,7 @@ whew!
         </section>
         <section data-markdown>
           <script type="text/template">
-# Takeaways
+# Erlang teaches you
 * functional idioms
 * recursion
 * pattern matching

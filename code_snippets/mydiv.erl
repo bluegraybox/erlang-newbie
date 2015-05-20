@@ -1,6 +1,8 @@
 #!/usr/local/bin/escript
 %%! -smp enable -sname mydiv
 
+%% Command-line utility for doing division.
+
 -mode(compile).  % for better performance
 
 %% mydiv/2 - the function we really care about

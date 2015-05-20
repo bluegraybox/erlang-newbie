@@ -1,3 +1,6 @@
+%% Service which performs division.
+%% Has a supervisor which restarts it in event of a crash (e.g. divide by zero).
+
 -module(divsvc).
 
 -export([init/0, supervisor/0, div_loop/0, get_div/2, get_div/3]).

@@ -1,3 +1,6 @@
+%% Various functions to demonstrate how file access works.
+%% Run them from the Erlang shell.
+
 -module(file_demo).
 
 -export([get_term/0, get_bin/0, get_missing/0, write_war/1, writebot/3]).
